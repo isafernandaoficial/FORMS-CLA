@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sua Voz Importa - GET Church</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1e3a 0%, #1a3a52 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 45px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 3px solid #c9a961;
+            padding-bottom: 25px;
+        }
+        
+        h1 {
+            color: #0a1e3a;
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #c9a961;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c9a961, #0a1e3a);
+            transition: width 0.4s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        
+        .question-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-number {
+            color: #c9a961;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        
+        .question-title {
+            color: #0a1e3a;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #c9a961;
+            box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.15);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        select {
+            cursor: pointer;
+        }
+        
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-item:hover,
+        .checkbox-item:hover {
+            border-color: #c9a961;
+            background: #faf8f5;
+        }
+        
+        .radio-item input[type="radio"],
+        .checkbox-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #c9a961;
+            flex-shrink: 0;
+        }
+        
+        .radio-item label,
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-previous {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-previous:hover:not(:disabled) {
+            background: #e8e8e8;
+            border-color: #c9a961;
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #0a1e3a 0%, #1a3a52 100%);
+            color: white;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(10, 30, 58, 0.3);
+        }
+        
+        .btn-previous:disabled,
+        .btn-next:disabled,
+        .btn-submit:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .success-box {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 35px;
+            border-radius: 8px;
+            border: 2px solid #c3e6cb;
+            text-align: center;
+        }
+        
+        .success-box h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        
+        .error-box {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #f5c6cb;
+            margin-bottom: 20px;
+        }
+        
+        .loading-box {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #c9a961;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .question-title {
+                font-size: 17px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sua Voz Importa</h1>
+            <p class="subtitle">GET CHURCH GLOBAL • CLÃ ONLINE</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text"><span id="currentQuestion">1</span> de 19</p>
+        </div>
+        
+        <div class="error-box" id="errorBox"></div>
+        <div class="loading-box" id="loadingBox"><div class="spinner"></div><p>Processando...</p></div>
+        <div class="success-box" id="successBox"><h2>✓ Obrigado!</h2><p>Seu feedback foi registrado com sucesso.</p></div>
+        
+        <form id="questionnaireForm">
+            <!-- Q1 -->
+            <div class="question-container active" data-question="1">
+                <div class="question-number">Pergunta 1 de 19</div>
+                <div class="question-title">Qual é o seu nome?</div>
+                <div class="form-group">
+                    <input type="text" name="nome" required placeholder="Nome completo">
+                </div>
+            </div>
+            
+            <!-- Q2 -->
+            <div class="question-container" data-question="2">
+                <div class="question-number">Pergunta 2 de 19</div>
+                <div class="question-title">Qual é o seu email?</div>
+                <div class="form-group">
+                    <input type="email" name="email" required placeholder="seu.email@exemplo.com">
+                </div>
+            </div>
+            
+            <!-- Q3 -->
+            <div class="question-container" data-question="3">
+                <div class="question-number">Pergunta 3 de 19</div>
+                <div class="question-title">Qual é o seu telefone?</div>
+                <div class="form-group">
+                    <input type="tel" name="telefone" required placeholder="(11) 99999-9999">
+                </div>
+            </div>
+            
+            <!-- Q4 -->
+            <div class="question-container" data-question="4">
+                <div class="question-number">Pergunta 4 de 19</div>
+                <div class="question-title">Qual é o seu sexo?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="sexo" value="Masculino" required><label>Masculino</label></div>
+                    <div class="radio-item"><input type="radio" name="sexo" value="Feminino"><label>Feminino</label></div>
+                    <div class="radio-item"><input type="radio" name="sexo" value="Prefiro não informar"><label>Prefiro não informar</label></div>
+                </div>
+            </div>
+            
+            <!-- Q5 -->
+            <div class="question-container" data-question="5">
+                <div class="question-number">Pergunta 5 de 19</div>
+                <div class="question-title">Qual é a sua faixa etária?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="idade" value="Até 18 anos" required><label>Até 18 anos</label></div>
+                    <div class="radio-item"><input type="radio" name="idade" value="19 a 30 anos"><label>19 a 30 anos</label></div>
+                    <div class="radio-item"><input type="radio" name="idade" value="31 a 45 anos"><label>31 a 45 anos</label></div>
+                    <div class="radio-item"><input type="radio" name="idade" value="Maior que 45 anos"><label>Maior que 45 anos</label></div>
+                </div>
+            </div>
+            
+            <!-- Q6 -->
+            <div class="question-container" data-question="6">
+                <div class="question-number">Pergunta 6 de 19</div>
+                <div class="question-title">Qual é o seu estado civil?</div>
+                <div class="form-group">
+                    <select name="estadoCivil" required>
+                        <option value="">Selecione...</option>
+                        <option value="Solteiro(a)">Solteiro(a)</option>
+                        <option value="Namorando">Namorando</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Divorciado(a)">Divorciado(a)</option>
+                        <option value="Viúvo(a)">Viúvo(a)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Q7 -->
+            <div class="question-container" data-question="7">
+                <div class="question-number">Pergunta 7 de 19</div>
+                <div class="question-title">Você é batizado(a)?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="batizado" value="Sim" required><label>Sim, sou batizado</label></div>
+                    <div class="radio-item"><input type="radio" name="batizado" value="Não"><label>Não, ainda não sou</label></div>
+                    <div class="radio-item"><input type="radio" name="batizado" value="Prefiro não informar"><label>Prefiro não informar</label></div>
+                </div>
+            </div>
+            
+            <!-- Q8 -->
+            <div class="question-container" data-question="8">
+                <div class="question-number">Pergunta 8 de 19</div>
+                <div class="question-title">Qual é o nome do seu clã?</div>
+                <div class="form-group">
+                    <input type="text" name="nomeClan" required placeholder="Digite o nome do seu clã">
+                </div>
+            </div>
+            
+            <!-- Q9 -->
+            <div class="question-container" data-question="9">
+                <div class="question-number">Pergunta 9 de 19</div>
+                <div class="question-title">Qual é a durabilidade do seu clã?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="duracaoClan" value="Até 40 minutos" required><label>Até 40 minutos</label></div>
+                    <div class="radio-item"><input type="radio" name="duracaoClan" value="Até 1 hora"><label>Até 1 hora</label></div>
+                    <div class="radio-item"><input type="radio" name="duracaoClan" value="Maior que 1 hora"><label>Maior que 1 hora</label></div>
+                </div>
+            </div>
+            
+            <!-- Q10 -->
+            <div class="question-container" data-question="10">
+                <div class="question-number">Pergunta 10 de 19</div>
+                <div class="question-title">Você participa do GET Online?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="participa" value="Sim" required><label>Sim, participo regularmente</label></div>
+                    <div class="radio-item"><input type="radio" name="participa" value="Não participo"><label>Não participo no momento</label></div>
+                    <div class="radio-item"><input type="radio" name="participa" value="Parei"><label>Parei de participar</label></div>
+                </div>
+            </div>
+            
+            <!-- Q11 -->
+            <div class="question-container" data-question="11">
+                <div class="question-number">Pergunta 11 de 19</div>
+                <div class="question-title">Com que frequência você participa?</div>
+                <div class="form-group">
+                    <select name="frequencia" required>
+                        <option value="">Selecione...</option>
+                        <option value="Toda semana">Toda semana</option>
+                        <option value="2-3 vezes por mês">2 a 3 vezes por mês</option>
+                        <option value="1 vez por mês">1 vez por mês</option>
+                        <option value="Raramente">Raramente</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Q12 -->
+            <div class="question-container" data-question="12">
+                <div class="question-number">Pergunta 12 de 19</div>
+                <div class="question-title">O horário funciona para você?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="barreira_horario" value="Sim" checked required><label>Sim, funciona bem</label></div>
+                    <div class="radio-item"><input type="radio" name="barreira_horario" value="Não"><label>Não, é uma barreira</label></div>
+                </div>
+            </div>
+            
+            <!-- Q13 -->
+            <div class="question-container" data-question="13">
+                <div class="question-number">Pergunta 13 de 19</div>
+                <div class="question-title">Você consegue abrir a câmera?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="barreira_camera" value="Sim" checked required><label>Sim, consigo</label></div>
+                    <div class="radio-item"><input type="radio" name="barreira_camera" value="Não"><label>Não, é uma barreira</label></div>
+                </div>
+            </div>
+            
+            <!-- Q14 -->
+            <div class="question-container" data-question="14">
+                <div class="question-number">Pergunta 14 de 19</div>
+                <div class="question-title">Você consegue abrir o áudio?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="barreira_audio" value="Sim" checked required><label>Sim, consigo</label></div>
+                    <div class="radio-item"><input type="radio" name="barreira_audio" value="Não"><label>Não, é uma barreira</label></div>
+                </div>
+            </div>
+            
+            <!-- Q15 -->
+            <div class="question-container" data-question="15">
+                <div class="question-number">Pergunta 15 de 19</div>
+                <div class="question-title">Você está passando por um momento difícil?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="barreira_desanimado" value="Não" checked required><label>Não, estou bem</label></div>
+                    <div class="radio-item"><input type="radio" name="barreira_desanimado" value="Sim"><label>Sim, estou desanimado</label></div>
+                </div>
+            </div>
+            
+            <!-- Q16 -->
+            <div class="question-container" data-question="16">
+                <div class="question-number">Pergunta 16 de 19</div>
+                <div class="question-title">Você se sente pertencente ao grupo?</div>
+                <div class="radio-group">
+                    <div class="radio-item"><input type="radio" name="barreira_pertencimento" value="Sim" checked required><label>Sim, me sinto pertencente</label></div>
+                    <div class="radio-item"><input type="radio" name="barreira_pertencimento" value="Não"><label>Não, não me sinto</label></div>
+                </div>
+            </div>
+            
+            <!-- Q17 -->
+            <div class="question-container" data-question="17">
+                <div class="question-number">Pergunta 17 de 19</div>
+                <div class="question-title">O que MAIS você gosta no GET Online?</div>
+                <div class="form-group">
+                    <textarea name="oQueGosta" required placeholder="Conte para a gente..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Q18 -->
+            <div class="question-container" data-question="18">
+                <div class="question-number">Pergunta 18 de 19</div>
+                <div class="question-title">O que INCOMODA você ou gostaria que mudasse?</div>
+                <div class="form-group">
+                    <textarea name="oQueIncomoda" required placeholder="Sua opinião é valiosa..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Q19 -->
+            <div class="question-container" data-question="19">
+                <div class="question-number">Pergunta 19 de 19</div>
+                <div class="question-title">Tem mais alguma sugestão de melhoria?</div>
+                <div class="form-group">
+                    <textarea name="sugestoes" placeholder="Deixe suas sugestões aqui (opcional)..."></textarea>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" class="btn-previous" id="btnPrevious" onclick="previousQuestion()">← Anterior</button>
+                <button type="button" class="btn-next" id="btnNext" onclick="nextQuestion()">Próximo →</button>
+                <button type="submit" class="btn-submit" id="btnSubmit" style="display: none;">Enviar</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 19;
+        
+        function updateProgress() {
+            const percentage = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestion;
+            
+            document.getElementById('btnPrevious').style.display = currentQuestion === 1 ? 'none' : 'block';
+            document.getElementById('btnNext').style.display = currentQuestion === totalQuestions ? 'none' : 'block';
+            document.getElementById('btnSubmit').style.display = currentQuestion === totalQuestions ? 'block' : 'none';
+        }
+        
+        function showQuestion(n) {
+            if (n < 1) n = 1;
+            if (n > totalQuestions) n = totalQuestions;
+            
+            document.querySelectorAll('.question-container').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[data-question="${n}"]`).classList.add('active');
+            
+            currentQuestion = n;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+        
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 1) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+        
+        document.getElementById('questionnaireForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = {
+                timestamp: new Date().toLocaleString('pt-BR'),
+                nome: formData.get('nome'),
+                email: formData.get('email'),
+                telefone: formData.get('telefone'),
+                sexo: formData.get('sexo'),
+                idade: formData.get('idade'),
+                estadoCivil: formData.get('estadoCivil'),
+                batizado: formData.get('batizado'),
+                nomeClan: formData.get('nomeClan'),
+                duracaoClan: formData.get('duracaoClan'),
+                participa: formData.get('participa'),
+                frequencia: formData.get('frequencia'),
+                barreiras: `Horário: ${formData.get('barreira_horario')} | Câmera: ${formData.get('barreira_camera')} | Áudio: ${formData.get('barreira_audio')} | Desanimado: ${formData.get('barreira_desanimado')} | Pertencimento: ${formData.get('barreira_pertencimento')}`,
+                oQueGosta: formData.get('oQueGosta'),
+                oQueIncomoda: formData.get('oQueIncomoda'),
+                sugestoes: formData.get('sugestoes')
+            };
+            
+            document.getElementById('loadingBox').style.display = 'block';
+            document.getElementById('errorBox').style.display = 'none';
+            
+            try {
+                localStorage.setItem('ultimoQuestionario', JSON.stringify(data));
+                
+                setTimeout(() => {
+                    document.getElementById('loadingBox').style.display = 'none';
+                    document.getElementById('successBox').style.display = 'block';
+                    form.style.display = 'none';
+                }, 1000);
+                
+                console.log('Dados salvos:', data);
+            } catch (error) {
+                document.getElementById('loadingBox').style.display = 'none';
+                document.getElementById('errorBox').textContent = 'Erro: ' + error.message;
+                document.getElementById('errorBox').style.display = 'block';
+            }
+        });
+        
+        updateProgress();
+    </script>
+</body>
+</html>
