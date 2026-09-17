@@ -592,9 +592,9 @@
             document.getElementById('loadingBox').style.display = 'block';
             document.getElementById('errorBox').style.display = 'none';
             
-            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzB8sxSW9JiXL4q8lN5pvIaonkm6xrvSWOm0Di67obHpsblJ0CAY3eO_M_P8I4Bpj37Q/exec';
+            const SUPABASE_EDGE_FUNCTION = 'https://ipqvixoauhvqgwohdwnt.supabase.co/functions/v1/handle_feedback_submission';
             
-            fetch(APPS_SCRIPT_URL, {
+            fetch(SUPABASE_EDGE_FUNCTION, {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
