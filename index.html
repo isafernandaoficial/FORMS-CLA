@@ -416,7 +416,7 @@
             <!-- Q10 -->
             <div class="question-container" data-question="10">
                 <div class="question-number">Pergunta 10 de 19</div>
-                <div class="question-title">Você participa do CLÃ Online?</div>
+                <div class="question-title">Você participa do GET Online?</div>
                 <div class="radio-group">
                     <div class="radio-item"><input type="radio" name="participa" value="Sim" required><label>Sim, participo regularmente</label></div>
                     <div class="radio-item"><input type="radio" name="participa" value="Não participo"><label>Não participo no momento</label></div>
@@ -568,7 +568,6 @@
             const form = e.target;
             const formData = new FormData(form);
             const data = {
-                timestamp: new Date().toLocaleString('pt-BR'),
                 nome: formData.get('nome'),
                 email: formData.get('email'),
                 telefone: formData.get('telefone'),
@@ -580,7 +579,11 @@
                 duracaoClan: formData.get('duracaoClan'),
                 participa: formData.get('participa'),
                 frequencia: formData.get('frequencia'),
-                barreiras: `Horário: ${formData.get('barreira_horario')} | Câmera: ${formData.get('barreira_camera')} | Áudio: ${formData.get('barreira_audio')} | Desanimado: ${formData.get('barreira_desanimado')} | Pertencimento: ${formData.get('barreira_pertencimento')}`,
+                barreira_horario: formData.get('barreira_horario'),
+                barreira_camera: formData.get('barreira_camera'),
+                barreira_audio: formData.get('barreira_audio'),
+                barreira_desanimado: formData.get('barreira_desanimado'),
+                barreira_pertencimento: formData.get('barreira_pertencimento'),
                 oQueGosta: formData.get('oQueGosta'),
                 oQueIncomoda: formData.get('oQueIncomoda'),
                 sugestoes: formData.get('sugestoes')
@@ -589,7 +592,17 @@
             document.getElementById('loadingBox').style.display = 'block';
             document.getElementById('errorBox').style.display = 'none';
             
-            try {
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzB8sxSW9JiXL4q8lN5pvIaonkm6xrvSWOm0Di67obHpsblJ0CAY3eO_M_P8I4Bpj37Q/exec';
+            
+            fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
                 localStorage.setItem('ultimoQuestionario', JSON.stringify(data));
                 
                 setTimeout(() => {
@@ -598,12 +611,14 @@
                     form.style.display = 'none';
                 }, 1000);
                 
-                console.log('Dados salvos:', data);
-            } catch (error) {
+                console.log('Dados enviados com sucesso:', result);
+            })
+            .catch(error => {
                 document.getElementById('loadingBox').style.display = 'none';
-                document.getElementById('errorBox').textContent = 'Erro: ' + error.message;
+                document.getElementById('errorBox').textContent = 'Erro ao enviar: ' + error.message + '. Tente novamente.';
                 document.getElementById('errorBox').style.display = 'block';
-            }
+                console.error('Erro:', error);
+            });
         });
         
         updateProgress();
